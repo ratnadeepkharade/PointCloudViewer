@@ -300,17 +300,26 @@
     color: #e6ebf1;
     font-size: medium;
   }
+  .pcv-page-wrapper {
+    width: 100%;
+    height: calc(100vh - 50px);
+  }
   .pcv-sidebar {
     float: left;
     width: 30%;
-    height: 100%;
+    height:inherit;
     box-sizing: border-box;
-    background-color: #c2c3c4;
+    background-color: #fafafa;
   }
   .pcv-content {
     float: left;
     width: 70%;
-    height: 100%;
+    height: inherit;
     box-sizing: border-box;
     background-color: #fafafa;
+    position: relative;
+  }
+
+  :host::ng-deep canvas {
+    background: linear-gradient(to bottom, #54b2fd 0%,#1a2329 100%);
   }

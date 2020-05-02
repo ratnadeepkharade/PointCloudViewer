@@ -1,9 +1,12 @@
 <div class="pcv-header">POINT CLOUD VIEWER</div>
 
-<div class="pcv-sidebar">
 
-</div>
-
-<div class="pcv-content">
-
+<div class="pcv-page-wrapper">
+    <div class="pcv-sidebar">
+        <button (click)="setProjection()">Click Me</button>
+    </div>
+    
+    <div class="pcv-content" id="mycanvas-wrapper">
+        <!--canvas class="pcv-canvas" id="mycanvas" #myCanvas></canvas-->
+    </div>
 </div>
