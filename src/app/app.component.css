@@ -1,4 +1,103 @@
-:host {
+  .pcv-header {
+    float: left;
+    clear: both;
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+    background-color: #333;
+    padding-left: 10px;
+    line-height: 50px;
+    color: #e6ebf1;
+    font-size: medium;
+  }
+  .pcv-page-wrapper {
+    width: 100%;
+    height: calc(100vh - 50px);
+  }
+  .pcv-sidebar {
+    float: left;
+    width: 30%;
+    height:inherit;
+    box-sizing: border-box;
+    background-color: #fafafa;
+  }
+  .pcv-content {
+    float: left;
+    width: 70%;
+    height: inherit;
+    box-sizing: border-box;
+    background-color: #fafafa;
+    position: relative;
+  }
+
+  :host::ng-deep canvas {
+    background: linear-gradient(to bottom, #54b2fd 0%,#1a2329 100%);
+  }
+
+  .view-controls-header {
+    width: 100%;
+    height: 40px;
+    background-color: #eaeaea;
+    font-size: medium;
+    font-weight: 500;
+    color: black;
+    line-height: 40px;
+    text-align: center;
+  }
+
+  .view-controls-wrapper{
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .pcv-projection-inner{
+    width: 100%;
+  }
+  .tab {
+    width: 50%;
+    height: 40px;
+    float: left;
+    line-height: 30px;
+    text-align: center;
+    padding: 5px;
+    box-sizing: border-box;
+    background-color: rgb(216, 216, 216);
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .view-buttons-wrapper {
+    margin-top: 10px;
+    float: left;
+    width: 100%;
+  }
+
+  .view-tab {
+    width: 31.2%;
+    height: 40px;
+    float: left;
+    line-height: 30px;
+    text-align: center;
+    padding: 5px;
+    box-sizing: border-box;
+    background-color: rgb(227, 227, 227);
+    overflow: hidden;
+    cursor: pointer;
+    margin: 2px;
+    box-sizing: border-box;
+  }
+
+  .selected {
+    background-color: #666;
+    color: white;
+  }
+
+
+
+
+/* Default Angular Styles */
+  :host {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     font-size: 14px;
     color: #333;
@@ -285,41 +384,4 @@
       display: none;
       visibility: hidden;
     }
-  }
-
-
-  .pcv-header {
-    float: left;
-    clear: both;
-    width: 100%;
-    height: 50px;
-    box-sizing: border-box;
-    background-color: #333;
-    padding-left: 10px;
-    line-height: 50px;
-    color: #e6ebf1;
-    font-size: medium;
-  }
-  .pcv-page-wrapper {
-    width: 100%;
-    height: calc(100vh - 50px);
-  }
-  .pcv-sidebar {
-    float: left;
-    width: 30%;
-    height:inherit;
-    box-sizing: border-box;
-    background-color: #fafafa;
-  }
-  .pcv-content {
-    float: left;
-    width: 70%;
-    height: inherit;
-    box-sizing: border-box;
-    background-color: #fafafa;
-    position: relative;
-  }
-
-  :host::ng-deep canvas {
-    background: linear-gradient(to bottom, #54b2fd 0%,#1a2329 100%);
   }

@@ -3,10 +3,33 @@
 
 <div class="pcv-page-wrapper">
     <div class="pcv-sidebar">
-        <button (click)="setProjection()">Click Me</button>
+        <div class="pcv-view-controls">
+            <div class="view-controls-header">
+                Projection and View
+            </div>
+            <div class="view-controls-wrapper">
+                <div class="pcv-projection-wrapper">
+                    <div class="pcv-projection-inner">
+                        <div class="perspective tab" [ngClass]="{'selected': selectedProjection==='P'}" (click)="changeProjection('P')">Perspective</div>
+                        <div class="orthographic tab" [ngClass]="{'selected': selectedProjection==='O'}" (click)="changeProjection('O')">Orthographic</div>
+                    </div>
+                </div>
+                <div class="view-buttons-wrapper">
+                    <div class="view-buttons-inner">
+                        <div class="view-tab" [ngClass]="{'selected': selectedView==='left'}" (click)="setProjectionView('left')">Left</div>
+                        <div class="view-tab" [ngClass]="{'selected': selectedView==='right'}" (click)="setProjectionView('right')">Right</div>
+                        <div class="view-tab" [ngClass]="{'selected': selectedView==='front'}" (click)="setProjectionView('front')">Front</div>
+                    </div>
+                    <div class="view-buttons-inner">
+                        <div class="view-tab" [ngClass]="{'selected': selectedView==='back'}" (click)="setProjectionView('back')">Back</div>
+                        <div class="view-tab" [ngClass]="{'selected': selectedView==='top'}" (click)="setProjectionView('top')">Top</div>
+                        <div class="view-tab" [ngClass]="{'selected': selectedView==='bottom'}" (click)="setProjectionView('bottom')">Bottom</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-    
-    <div class="pcv-content" id="mycanvas-wrapper">
-        <!--canvas class="pcv-canvas" id="mycanvas" #myCanvas></canvas-->
-    </div>
+
+    <div class="pcv-content" id="mycanvas-wrapper"></div>
 </div>

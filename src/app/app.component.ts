@@ -13,20 +13,53 @@ export class AppComponent {
   camera: any;
   controls: any;
   scene: any;
-  cube;any;
-  pointcloud:any;
+  cube; any;
+  pointcloud: any;
+  selectedProjection = 'P';
+  selectedView = '';
 
   constructor() {
 
   }
 
   ngAfterViewInit() {
+    this.init(this.selectedProjection);
+  }
+
+  init(projection = "P") {
+    var w = document.getElementById("mycanvas-wrapper").offsetWidth
+    var h = document.getElementById("mycanvas-wrapper").offsetHeight
+    var viewSize = h;
+    var aspectRatio = w / h;
+
+    var viewport = {
+      viewSize: viewSize,
+      aspectRatio: aspectRatio,
+      left: (-aspectRatio * viewSize) / 2,
+      right: (aspectRatio * viewSize) / 2,
+      top: viewSize / 2,
+      bottom: -viewSize / 2,
+      near: -100,
+      far: 1000
+    }
     //three.js
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+    if (projection === "P") {
+      this.camera = new THREE.PerspectiveCamera(45, w / h, 1, 1000);
+    } else {
+      this.camera = new THREE.OrthographicCamera(
+        viewport.left,
+        viewport.right,
+        viewport.top,
+        viewport.bottom
+      );
+      this.camera.zoom = 9;
+      this.camera.updateProjectionMatrix();
+    }
 
+    document.getElementById("mycanvas-wrapper").innerHTML = "";
     var canvas = document.createElement("canvas");
-    canvas.width  = document.getElementById("mycanvas-wrapper").offsetWidth;
+    canvas.width = document.getElementById("mycanvas-wrapper").offsetWidth;
     canvas.height = document.getElementById("mycanvas-wrapper").offsetHeight;
     document.getElementById("mycanvas-wrapper").appendChild(canvas);
 
@@ -43,16 +76,10 @@ export class AppComponent {
         powerPreference: "high-performance"
       });
 
-    //var geometry = new THREE.BoxBufferGeometry(25, 1, 25);
-    //var material = new THREE.MeshBasicMaterial({ color: 0x44AA44 });
-    //this.cube = new THREE.Mesh(geometry, material);
-    //this.cube.position.y = -2;
-    //this.scene.add(this.cube);
-
     this.scene.add(new THREE.AmbientLight(0xffffff));
 
     this.controls = new OrbitControls(this.camera, canvas);
-    this.camera.position.z = 10;
+    this.camera.position.z = 70;
 
     var raycaster = new THREE.Raycaster();
     raycaster.params.Points.threshold = 1e-2;
@@ -63,30 +90,38 @@ export class AppComponent {
       raycaster.setFromCamera(normalized, this.camera);
     }
 
-    canvas.onclick = (event) => {
-      var intesects = raycaster.intersectObject(this.scene, true);
+    canvas.onclick = (evt) => {
+      // var intesects = raycaster.intersectObject(this.scene, true);
+      // console.log(intesects);
+      // //if (intesects.length > 0) {
+      //   var geometry = new THREE.SphereBufferGeometry(0.1, 32, 32);
+      //   var material = new THREE.MeshBasicMaterial({ color: 0xAA4444 });
+      //   var sphere = new THREE.Mesh(geometry, material);
+      //   sphere.position.copy(intesects[0].point);
+      //   this.scene.add(sphere);
+      // //}
+      evt.preventDefault();
+      var mousePosition = new THREE.Vector2();
 
+      mousePosition.x = ((evt.clientX - canvas.offsetLeft) / canvas.width) * 2 - 1;
+      mousePosition.y = -((evt.clientY - canvas.offsetTop) / canvas.height) * 2 + 1;
 
-      if (intesects.length > 0) {
-        var geometry = new THREE.SphereBufferGeometry(0.1, 32, 32);
-        var material = new THREE.MeshBasicMaterial({ color: 0xAA4444 });
-        var sphere = new THREE.Mesh(geometry, material);
-        sphere.position.copy(intesects[0].point);
-        this.scene.add(sphere);
-      }
+      raycaster.setFromCamera(mousePosition, this.camera);
+      var intersects = raycaster.intersectObjects(this.scene, true);
+      console.log(intersects);
+
+      if (intersects.length > 0)
+        return intersects[0].point;
     }
+    var geometry = new THREE.SphereBufferGeometry(0.1, 32, 32);
+    var material = new THREE.MeshBasicMaterial({ color: 0xAA4444 });
+    var sphere = new THREE.Mesh(geometry, material);
+    //sphere.position.copy(intesects[0].point);
+    this.scene.add(sphere);
 
     Potree.Global.workerPath = "../assets/lib/potree-core/source";
 
-    //this.loadPointCloud("../assets/lib/potree-core/data/lion_takanawa_ept_laz/ept.json", new THREE.Vector3(-4, -4, 3.0));
-    //this.loadPointCloud("../assets/lib/potree-core/data/lion_takanawa_ept_bin/ept.json", new THREE.Vector3(-11, -4, 3.0));
-    //this.loadPointCloud("../assets/lib/potree-core/data/lion_takanawa/cloud.js", new THREE.Vector3(0.0, 0.0, 0.0));
     this.loadPointCloud("../assets/lib/potree-core/data/firstFloor/cloud.js", new THREE.Vector3(0.0, 0.0, 0.0));
-    //this.loadPointCloud("../assets/lib/potree-core/data/lion_takanawa_las/cloud.js", new THREE.Vector3(3, -3, 0.0));
-    //this.loadPointCloud("../assets/lib/potree-core/data/lion_takanawa_laz/cloud.js", new THREE.Vector3(8, -3, 0.0));
-    //loadPointCloud("http://arena4d.uksouth.cloudapp.azure.com:8080/4e5059c4-f701-4a8f-8830-59e78a2c0816/BLK360 Sample.vpc");
-    //"http://5.9.65.151/mschuetz/potree/resources/pointclouds/faro/skatepark/cloud.js"
-    //"http://5.9.65.151/mschuetz/potree/resources/pointclouds/weiss/subseamanifold2/cloud.js"
 
     this.loop();
     window.dispatchEvent(new Event('resize'));
@@ -105,12 +140,9 @@ export class AppComponent {
 
     Potree.loadPointCloud(url, "pointcloud", (e) => {
       var points = new Potree.Group();
-      //points.material.opacity = 1.0;
+      points.name = "Potree_Points";
       points.material.wireframe = true;
-      //points.translateX(-30);
-      //points.translateY(-30);
-      //points.translateZ(-30);
-      this.scene.add(points);
+
 
       this.pointcloud = e.pointcloud;
 
@@ -125,28 +157,82 @@ export class AppComponent {
       material.shape = Potree.PointShape.CIRCLE; //CIRCLE | SQUARE
 
       points.add(this.pointcloud);
+      new THREE.Box3().setFromObject(points).getCenter(points.position).multiplyScalar(- 1);
+
+      this.scene.add(points);
     });
   }
 
   loop = () => {
-    //this.cube.rotation.y += 0.01;
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
     requestAnimationFrame(this.loop);
   }
 
-  setProjection() {
-    this.camera.position.set(20, 0, 0);
-			this.camera.rotation.set(0, Math.PI / 2, 0);
-      //camera.zoomTo(node, 1);
-      //this.fitToScreen();
-      this.setCameraMode(0)
+  changeProjection(projection) {
+    this.selectedProjection = projection;
+    this.init(projection);
   }
-  setCameraMode(mode){
-		this.scene.cameraMode = mode;
 
-			this.pointcloud.material.useOrthographicCamera = true;
-	}
+  setProjectionView(view) {
+    this.selectedView = view;
+    switch (view) {
+      case 'top':
+        this.topView(this.camera);
+        break;
+      case 'bottom':
+        this.bottomView(this.camera);
+        break;
+      case 'left':
+        this.leftView(this.camera);
+        break;
+      case 'right':
+        this.rightView(this.camera);
+        break;
+      case 'front':
+        this.frontView(this.camera);
+        break;
+      case 'back':
+        this.backView(this.camera);
+        break;
+      default:
+        break;
+    }
+  }
 
+  topView(camera) {
+    camera.position.set(0, 70, 0);
+    camera.rotation.set(-Math.PI / 2, 0, 0);
+    //camera.zoomTo(node, 1);
+  }
+  bottomView(camera) {
+    camera.position.set(0, -70, 0);
+    camera.rotation.set(Math.PI / 2, 0, 0);
+    //camera.zoomTo(node, 1);
+  }
+
+  frontView(camera) {
+    camera.position.set(0, 0, 70);
+    camera.rotation.set(0, 0, 0);
+    //camera.zoomTo(node, 1);
+  }
+
+  backView(camera) {
+    camera.position.set(0, 0, -70);
+    camera.rotation.set(0, 0, 0);
+    //camera.zoomTo(node, 1);
+  }
+
+  leftView(camera) {
+    camera.position.set(-70, 0, 0);
+    camera.rotation.set(0, -Math.PI / 2, 0);
+    //camera.zoomTo(node, 1);
+  }
+
+  rightView(camera) {
+    camera.position.set(70, 0, 0);
+    camera.rotation.set(0, Math.PI / 2, 0);
+    //camera.zoomTo(node, 1);
+  }
 
 }
