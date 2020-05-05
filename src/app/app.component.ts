@@ -91,15 +91,7 @@ export class AppComponent {
     }
 
     canvas.onclick = (evt) => {
-      // var intesects = raycaster.intersectObject(this.scene, true);
-      // console.log(intesects);
-      // //if (intesects.length > 0) {
-      //   var geometry = new THREE.SphereBufferGeometry(0.1, 32, 32);
-      //   var material = new THREE.MeshBasicMaterial({ color: 0xAA4444 });
-      //   var sphere = new THREE.Mesh(geometry, material);
-      //   sphere.position.copy(intesects[0].point);
-      //   this.scene.add(sphere);
-      // //}
+    
       evt.preventDefault();
       var mousePosition = new THREE.Vector2();
 
